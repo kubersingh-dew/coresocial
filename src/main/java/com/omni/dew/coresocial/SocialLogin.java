@@ -21,10 +21,24 @@ public class SocialLogin {
         this.baseLoginResponse = response;
         this.activity = activity;
         this.loginType = loginType;
+        String className = "com.omni.dew.socialgoogle.GoogleLogin";// really passed in from config
         if (loginType == LoginType.GOOGLE) {
-            baseLogin = new GoogleLogin(activity, loginResponse);
+            className = "com.omni.dew.socialgoogle.GoogleLogin";
         } else if (loginType == LoginType.FACEBOOK) {
-            baseLogin = new FaceBookLogin(activity, loginResponse);
+            className = "com.omni.dew.socialfacebook.FaceBookLogin";
+        }
+        try {
+            Class c = Class.forName(className);
+            baseLogin = (BaseLogin) c.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        if(baseLogin!=null){
+            baseLogin.init(activity, loginResponse);
         }
     }
 
